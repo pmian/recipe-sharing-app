@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import { RecipeProvider } from "./context/RecipeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { motion } from "framer-motion";
 
 function App() {
   return (
@@ -36,11 +37,43 @@ function App() {
 
 function RecipePage() {
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-4xl font-bold text-center mb-8">Your Recipes</h1>
-      <RecipeForm />
-      <RecipeList />
-    </div>
+    <motion.div
+      className="min-h-screen bg-gray-50 py-10 px-6 sm:px-10"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="max-w-4xl mx-auto">
+        {/* Page Heading */}
+        <motion.h1
+          className="text-4xl font-bold text-gray-900 text-center mb-8"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          Your Recipes
+        </motion.h1>
+
+        {/* Form Section */}
+        <motion.div
+          className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 mb-10"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <RecipeForm />
+        </motion.div>
+
+        {/* Recipe List Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
+          <RecipeList />
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }
 
