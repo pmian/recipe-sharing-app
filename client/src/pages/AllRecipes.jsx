@@ -11,7 +11,7 @@ const AllRecipes = () => {
     useEffect(() => {
         const fetchAllRecipes = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/all-recipes`, {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/recipes/all`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (!res.ok) throw new Error("Failed to fetch recipes");
@@ -107,8 +107,8 @@ const AllRecipes = () => {
                                     onClick={() => handleLike(recipe._id)}
                                     whileTap={{ scale: 0.9 }}
                                     className={`px-4 py-2 rounded-full font-semibold transition ${recipe.likes.includes(token ? jwtDecode(token).id : "")
-                                            ? "bg-red-500 text-white hover:bg-red-600"
-                                            : "bg-blue-500 text-white hover:bg-blue-600"
+                                        ? "bg-red-500 text-white hover:bg-red-600"
+                                        : "bg-blue-500 text-white hover:bg-blue-600"
                                         }`}
                                 >
                                     {recipe.likes.includes(token ? jwtDecode(token).id : "") ? "Unlike" : "Like"} (

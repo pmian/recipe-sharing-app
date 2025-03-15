@@ -1,59 +1,96 @@
 import { useRecipeContext } from "../context/RecipeContext";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 const RecipeList = () => {
-    const { recipes } = useRecipeContext();
+    const { recipes, editRecipe, deleteRecipe } = useRecipeContext();
+    const [editMode, setEditMode] = useState(null);
+    const [updatedRecipe, setUpdatedRecipe] = useState({ title: "", ingredients: "", instructions: "" });
+
+    const handleEditClick = (recipe) => {
+        setEditMode(recipe._id);
+        setUpdatedRecipe({ title: recipe.title, ingredients: recipe.ingredients.join(", "), instructions: recipe.instructions });
+    };
+
+    const handleSaveEdit = (recipeId) => {
+        editRecipe(recipeId, {
+            title: updatedRecipe.title,
+            ingredients: updatedRecipe.ingredients.split(",").map((ing) => ing.trim()),
+            instructions: updatedRecipe.instructions,
+        });
+        setEditMode(null);
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 p-6">
-            <motion.h1
-                className="text-4xl font-extrabold text-center mb-8 text-gray-800"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-            >
+            <motion.h1 className="text-4xl font-extrabold text-center mb-8 text-gray-800">
                 Recipes List
             </motion.h1>
 
             {recipes.length === 0 ? (
-                <p className="text-gray-500 text-center text-lg">
-                    No recipes yet. Add one!
-                </p>
+                <p className="text-gray-500 text-center text-lg">No recipes yet. Add one!</p>
             ) : (
                 <div className="max-w-5xl mx-auto grid gap-6">
-                    {recipes.map((recipe, index) => (
+                    {recipes.map((recipe) => (
                         <motion.div
                             key={recipe._id}
-                            className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-200"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1, duration: 0.4 }}
+                            className="bg-white p-4 rounded-lg shadow-md border border-gray-200"
                         >
-                            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                                {recipe.title}
-                            </h3>
-
-                            <div className="space-y-4">
+                            {editMode === recipe._id ? (
                                 <div>
-                                    <h4 className="text-lg font-semibold text-gray-700">
-                                        Ingredients:
-                                    </h4>
-                                    <ul className="list-disc pl-5 space-y-1 text-gray-600">
-                                        {recipe.ingredients.map((item, idx) => (
-                                            <li key={idx}>{item}</li>
-                                        ))}
-                                    </ul>
+                                    <input
+                                        className="w-full border p-2 mb-2"
+                                        value={updatedRecipe.title}
+                                        onChange={(e) => setUpdatedRecipe({ ...updatedRecipe, title: e.target.value })}
+                                    />
+                                    <input
+                                        className="w-full border p-2 mb-2"
+                                        value={updatedRecipe.ingredients}
+                                        onChange={(e) => setUpdatedRecipe({ ...updatedRecipe, ingredients: e.target.value })}
+                                    />
+                                    <textarea
+                                        className="w-full border p-2"
+                                        value={updatedRecipe.instructions}
+                                        onChange={(e) => setUpdatedRecipe({ ...updatedRecipe, instructions: e.target.value })}
+                                    />
+                                    <div className="flex gap-2 mt-2">
+                                        <button
+                                            onClick={() => handleSaveEdit(recipe._id)}
+                                            className="bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-1 rounded-md"
+                                        >
+                                            Save
+                                        </button>
+                                        <button
+                                            onClick={() => setEditMode(null)}
+                                            className="bg-gray-400 hover:bg-gray-500 text-white text-sm px-3 py-1 rounded-md"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
                                 </div>
+                            ) : (
+                                <>
+                                    <h3 className="text-xl font-semibold text-gray-900">{recipe.title}</h3>
+                                    <p className="text-gray-600 text-sm"><strong>Ingredients:</strong> {recipe.ingredients.join(", ")}</p>
+                                    <p className="text-gray-600 text-sm mt-2"><strong>Instructions:</strong> {recipe.instructions}</p>
 
-                                <div>
-                                    <h4 className="text-lg font-semibold text-gray-700">
-                                        Instructions:
-                                    </h4>
-                                    <p className="text-gray-600 whitespace-pre-line">
-                                        {recipe.instructions}
-                                    </p>
-                                </div>
-                            </div>
+                                    {/* Edit & Delete Buttons */}
+                                    <div className="flex gap-2 mt-3">
+                                        <button
+                                            onClick={() => handleEditClick(recipe)}
+                                            className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded-md"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => deleteRecipe(recipe._id)}
+                                            className="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded-md"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </>
+                            )}
                         </motion.div>
                     ))}
                 </div>

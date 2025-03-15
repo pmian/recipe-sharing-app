@@ -79,7 +79,6 @@ function RecipePage() {
 
 function PrivateRoute({ children }) {
   const { user } = useAuth();
-  console.log("PrivateRoute - User on render:", user);
   return user ? children : <Navigate to="/login" />;
 }
 
