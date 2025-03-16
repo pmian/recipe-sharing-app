@@ -18,7 +18,7 @@ const Navbar = () => {
                     to="/"
                     className="text-2xl font-bold tracking-tight hover:text-yellow-300 transition-colors"
                 >
-                    Recipe App
+                    Recipe Sharing App
                 </Link>
 
                 {/* Navigation Links */}
